@@ -33,13 +33,13 @@
 
 ## - React -
 
-C'est une library JavaScript qui permet de construire des UI en les décrivant comme une fonction de données (UI = f(data)). 
+C'est une library JavaScript qui permet de construire des UI en les décrivant comme une fonction de données (UI = f(data)).
 
-React sert à afficher une interface en fonction de données. 
+React sert à afficher une interface en fonction de données.
 
 **Un composant React** c'est **une fonction qui return du jsx (du js dans du html) pour décrire une partie de l'UI**. C'est une brique du frontend.
 
-**Un state** est **une donnée interne au composant qui peut changer et déclenche un re-render**. 
+**Un state** est **une donnée interne au composant qui peut changer et déclenche un re-render**.
 
 Les props sont des données qui sont passées d'un parent à un enfant. (Un composant peut appeler un autre composant)
 
@@ -56,7 +56,52 @@ React est une bibliothèque qui permet d’afficher une interface en fonction de
 - Dés qu'une data va être modifiée, un re-render de l'UI est effectué auto par setAppointment (useState([])).
 - useEffect([]) est une méthode React. Le [] signifie "une seule fois", donc quand la page charge fait ça (ce qui est envoyé en parametre de la fonciton, dans notre cas le fetch /appointments), si on fait useEffect(( => {}); il va s'effectuer à chaque re-render, ce qu'on ne souhaite pas ici.
 
-### IMPORTANT : Pour que React déclenche un Re-render après une modif d'une donnée du state, il faut qu'il soit au courant que la donnée a été modifiée. C'est pour cette raison qu'il faut modifier la donnée en utilisant l'API React (Le setter fournis par useState), et non modifier la valeur simplement en JS. 
+### IMPORTANT : Pour que React déclenche un Re-render après une modif d'une donnée du state, il faut qu'il soit au courant que la donnée a été modifiée. C'est pour cette raison qu'il faut modifier la donnée en utilisant l'API React (Le setter fournis par useState), et non modifier la valeur simplement en JS.
+
+
+### - CSS - 
+
+Une classe en React est un nom qu'on donne à un élément pour le styliser. 
+
+```javascript
+<div className="container"></div>
+```
+
+en CSS 
+
+```css
+.container {
+  background: red;
+}
+```
+
+--> Le . en CSS = "Je cible une classe".
+
+2 - Attribut (HTML)
+
+```javascript
+<input type="text" placeholder="Ton nom" />
+```
+
+type : Type d'input
+
+placeholder : texte gris
+
+value : valeur
+
+onClick : interaction (react)
+
+3 - Propriété CSS
+
+```css
+color: red;
+
+Suit le schéma : propriété: valeur;
+```
+
+Propriétés CSS les plus utiles :
+
+
 
 ### - Lexique -
 

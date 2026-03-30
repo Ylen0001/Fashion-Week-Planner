@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [appointments, setAppointments] = useState([]); // [] = On attend une liste d'appointments.
+  const [appointments, setAppointments] = useState([]);
 
-  const [brandName, setBrandName] = useState(""); // State 1 / champ brandName
+  const [brandName, setBrandName] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
 
-  // La première fois que le component react App est appelé : on demande au back de nous envoyer la liste des appointment présents dans la DB
   useEffect(() => {
     fetch("http://localhost:3000/appointments")
       .then((res) => res.json())
@@ -16,17 +16,10 @@ function App() {
         setAppointments(data);
       })
       .catch((err) => console.error(err));
-  }, []); // Le [] ici signifie "Lance cette fonction une seule fois au démarrage"
+  }, []);
 
-
-  /* (e) est un objet react, qui correspond à un event. 
-  Ici, il contient e.target (l'élément concerné, ici l'input) 
-  et e.value (La valeur actuelle du champs) */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    /* Empêche le comportement normal du navigateur. 
-    Pour ne pas que le navigateur recharge la page, mais que 
-    React s'en charge au on-click sur le bouton submit */
 
     const newAppointment = {
       brandName,
@@ -46,7 +39,10 @@ function App() {
 
       const createdAppointment = await res.json();
 
-      setAppointments([...appointments, createdAppointment]);
+      setAppointments((prevAppointments) => [
+      ...prevAppointments,
+      createdAppointment,
+      ]);
 
       setBrandName("");
       setAppointmentDate("");
@@ -58,72 +54,76 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>My Appointments</h1>
+    <div className="app">
+      <h1 className="page-title">My Appointments</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Brand name</label>
-          <br />
+      <form className="card" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="brandName">Brand name</label>
           <input
+            id="brandName"
             type="text"
             value={brandName}
             onChange={(e) => setBrandName(e.target.value)}
+            placeholder="Acne Studios, Khaite..."
           />
         </div>
 
-        <div>
-          <label>Appointment date</label>
-          <br />
+        <div className="form-group">
+          <label htmlFor="appointmentDate">Appointment date</label>
           <input
+            id="appointmentDate"
             type="datetime-local"
             value={appointmentDate}
             onChange={(e) => setAppointmentDate(e.target.value)}
           />
         </div>
 
-        <div>
-          <label>Location</label>
-          <br />
+        <div className="form-group">
+          <label htmlFor="location">Location</label>
           <input
+            id="location"
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            placeholder="Paris showroom, Zoom..."
           />
         </div>
 
-        <div>
-          <label>Notes</label>
-          <br />
+        <div className="form-group">
+          <label htmlFor="notes">Notes</label>
           <textarea
+            id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
+            placeholder="Key details, collection notes, priorities..."
+            rows="4"
           />
         </div>
 
-        <button type="submit">Add appointment</button>
+        <button className="button" type="submit">
+          Add appointment
+        </button>
       </form>
 
-      <hr />
+      <section className="appointments-section">
+        <h2 className="section-title">Upcoming appointments</h2>
 
-      {appointments.length === 0 ? (
-        <p>No appointments yet</p>
-      ) : (
-        <ul>
-          {appointments.map((appt) => (
-            <li key={appt.id}>
-              <strong>{appt.brandName}</strong> —{" "}
-              {new Date(appt.appointmentDate).toLocaleString()}
-            </li>
-          ))}
-        </ul>
-      )}
+        {appointments.length === 0 ? (
+          <p className="empty-state">No appointments yet</p>
+        ) : (
+          <ul className="appointments-list">
+            {appointments.map((appt) => (
+              <li className="appointment-item" key={appt.id}>
+                <strong>{appt.brandName}</strong>
+                <span>{new Date(appt.appointmentDate).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
 
 export default App;
-
-/* Lorsqu'un champs est modifié, onChange se déclenche, envoie a React e.target.value, et setX met à jour le state, ce qui fait que React re-render
-le champ et le paragraphe affichent la nouvelle valeur. 
-React relance le composant, fais une diff entre l'ancienne version du composant et la nouvelle, et modifie ce qui a changé uniquement.  */
