@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Header from "./components/Header.jsx";
 import "./App.css";
 
 function App() {
@@ -20,6 +21,10 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!brandName || !appointmentDate || !location){
+      alert("Please fill in all required fields.");
+      return;
+    }
 
     const newAppointment = {
       brandName,
@@ -55,7 +60,7 @@ function App() {
 
   return (
     <div className="app">
-      <header></header>
+      <Header currentPage="home"/>
       <h1 className="page-title">My Appointments</h1>
 
       <form className="card" onSubmit={handleSubmit}>

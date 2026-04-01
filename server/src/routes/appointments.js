@@ -15,6 +15,9 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    if(!brandname || !appointmentsDate || !location)
+        return res.status(400).json({ error: "Missing required fields" })
+      
     const { brandName, appointmentDate, location, notes } = req.body;
 
     const newAppointment = await prisma.appointment.create({
