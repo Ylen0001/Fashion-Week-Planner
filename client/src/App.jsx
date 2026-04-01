@@ -55,6 +55,7 @@ function App() {
 
   return (
     <div className="app">
+      <header></header>
       <h1 className="page-title">My Appointments</h1>
 
       <form className="card" onSubmit={handleSubmit}>
