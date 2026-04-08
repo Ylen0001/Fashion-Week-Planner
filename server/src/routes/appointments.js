@@ -15,10 +15,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    if(!brandname || !appointmentsDate || !location)
-        return res.status(400).json({ error: "Missing required fields" })
-      
     const { brandName, appointmentDate, location, notes } = req.body;
+
+    if (!brandName || !appointmentDate || !location) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
     const newAppointment = await prisma.appointment.create({
       data: {
@@ -52,6 +53,21 @@ router.get("/appointments/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching appointment" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    await prisma.appointment.delete({
+      where: { id },
+    });
+
+    res.json({ message: "Appointment deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error deleting appointment" });
   }
 });
 

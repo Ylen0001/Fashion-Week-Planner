@@ -356,3 +356,35 @@ textarea {
 body {
   font-family: 'Josefin Sans', sans-serif;
 }
+
+.delete-button {
+  margin-top: 10px;
+  align-self: flex-end;
+
+  background: linear-gradient(135deg, rgb(168, 84, 126), rgb(138, 92, 255));
+  color: var(--text-light);
+  border: none;
+  border-radius: 12px;
+
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  box-shadow: 0 10px 22px rgba(150, 86, 180, 0.28);
+}
+
+.delete-button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgb(154, 64, 110), rgb(120, 74, 240));
+  box-shadow: 0 14px 28px rgba(150, 86, 180, 0.36);
+}
+
+.delete-button:active {
+  transform: translateY(0);
+}

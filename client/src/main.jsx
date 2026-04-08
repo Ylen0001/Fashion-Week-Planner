@@ -2,6 +2,7 @@ import { StrictMode } from 'react' // Outil de debug dev
 import { createRoot } from 'react-dom/client' // Permet de brancher React sur le DOM (la page html)
 import './index.css' // Les styles css
 import App from './App.jsx' // Le composant principal React
+import { BrowserRouter } from "react-router-dom";
 
 
 /* On branche React sur index.html, 
@@ -11,7 +12,9 @@ Pour le reste : Affiche App avec StrictMode autour */
 
 createRoot(document.getElementById('root')).render( // Branche React sur index.html 
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 )
 
@@ -21,4 +24,5 @@ createRoot(document.getElementById('root')).render( // Branche React sur index.h
 /* Analogie finale : 
 - index.html : Le cadre vide (Le DOM) 
 - main.jsx : la main qui accroche le tableau 
-- App.jsx : Le tableau */
+- App.jsx : Le tableau 
+- BrowserRouter = système de couloir/portes entre les pièces */
