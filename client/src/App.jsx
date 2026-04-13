@@ -3,6 +3,8 @@ import Header from "./components/Header.jsx";
 import "./App.css";
 import AppointmentForm from "./components/AppointmentForm.jsx"
 import AppointmentList from "./components/AppointmentList.jsx"
+import AuthPage from "./pages/AuthPage.jsx"
+import { Routes, Route } from "react-router-dom"
 
 function App() {
   const [appointments, setAppointments] = useState([]);
@@ -75,24 +77,40 @@ function App() {
     }
   };
 
-  return (
-    <div className="app">
-      <Header currentPage="home"/>
-      <h1 className="page-title">My Appointments</h1>
-        <AppointmentForm
-          brandName={brandName}
-          setBrandName={setBrandName}
-          appointmentDate={appointmentDate}
-          setAppointmentDate={setAppointmentDate}
-          location={location}
-          setLocation={setLocation}
-          notes={notes}
-          setNotes={setNotes}
-          handleSubmit={handleSubmit}> 
-        </AppointmentForm>
-        <AppointmentList appointments={appointments} handleDelete={handleDelete}></AppointmentList>
-    </div>
-  );
+return (
+  <div className="app">
+    <Header />
+
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+            <h1 className="page-title">My Appointments</h1>
+
+            <AppointmentForm
+              brandName={brandName}
+              setBrandName={setBrandName}
+              appointmentDate={appointmentDate}
+              setAppointmentDate={setAppointmentDate}
+              location={location}
+              setLocation={setLocation}
+              notes={notes}
+              setNotes={setNotes}
+              handleSubmit={handleSubmit}
+            />
+
+            <AppointmentList
+              appointments={appointments}
+              handleDelete={handleDelete}
+            />
+          </>
+        }
+      />
+    <Route path="/auth" element={<AuthPage/>}></Route>
+    </Routes>
+  </div>
+);
 }
 
 export default App;
