@@ -13,6 +13,7 @@ function App() {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3000/appointments")
@@ -86,7 +87,8 @@ return (
         path="/"
         element={
           <>
-            <h1 className="page-title">My Appointments</h1>
+            <h1 className="page-title">My Appointments </h1>
+            {currentUser && <p1>Welcome, {currentUser.username}</p1>}
 
             <AppointmentForm
               brandName={brandName}
@@ -107,7 +109,7 @@ return (
           </>
         }
       />
-    <Route path="/auth" element={<AuthPage/>}></Route>
+    <Route path="/auth" element={<AuthPage currentUser={currentUser} setCurrentUser={setCurrentUser}/>}></Route>
     </Routes>
   </div>
 );

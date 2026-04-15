@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuthForm from "../components/AuthForm.jsx"
 
-function AuthPage() {
+function AuthPage({currentUser, setCurrentUser}) {
   const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -10,7 +10,87 @@ function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if(mode === "signup"){
+      if(!password || !username || !email || !confirmPassword){
+        alert("Please fill all fields.");
+        return;
+      }
+
+      if(password !== confirmPassword){
+        alert("Passwords do not match!");
+        return;
+      }
+      
+      const account = {
+        username,
+        email,
+        password
+      };
+      
+      try {
+        const res = await fetch("http://localhost:3000/auth/signup", {
+        headers: {
+          "Content-Type" : "application/json"
+        },
+          method: "POST",
+          body: JSON.stringify(account)});
+
+          const data = await res.json();
+
+          if(!res.ok){
+            alert(data.error);
+            return;
+          } 
+          
+          alert("Account created successfully.");
+
+          setUsername("");
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setMode("login");
+
+        } catch (error) {
+          console.error(error);
+          alert("Network error. Please try again.");
+      }
+    } else if(mode === "login") {
+      
+      if(!email || !password){
+        alert("Missing email or password")
+        return;
+      }
+
+      const loginInfo = {
+        email,
+        password
+      }
+
+      try{
+        const res = await fetch("http://localhost:3000/auth/login", {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify(loginInfo)
+        });
+
+        const data = await res.json();
+
+        if(!res.ok){
+          alert(data.error)
+          return;
+        }
+
+        setCurrentUser(data.user)
+        alert("Login successful");
+
+      } catch(error){
+        console.error(error);
+        alert("Network error. Please try again.");
+      }
+    }
   }
 
   return (
@@ -18,7 +98,8 @@ function AuthPage() {
     username={username} setUsername={setUsername}
     email={email} setEmail={setEmail}
     password={password} setPassword={setPassword}
-    confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}></AuthForm>
+    confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
+    handleSubmit={handleSubmit}></AuthForm>
   );
 }
 

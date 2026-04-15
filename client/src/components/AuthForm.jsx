@@ -7,7 +7,8 @@ function AuthForm({mode,
     password,
     setPassword,
     confirmPassword,
-    setConfirmPassword
+    setConfirmPassword,
+    handleSubmit
 }) {
     return (
     <div className="auth-page">
@@ -33,7 +34,8 @@ function AuthForm({mode,
         </button>
       </div>
 
-      <form className="card auth-form">
+      <form className="card auth-form"
+        onSubmit={handleSubmit}>
         {mode === "signup" && (
           <div className="form-group">
             <label htmlFor="username">Username</label>
