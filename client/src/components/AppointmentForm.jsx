@@ -15,6 +15,7 @@ function AppointmentForm({
         <label htmlFor="brandName">Brand name</label>
             <input
             id="brandName"
+            placeholder="Khaite, Dior, The Row..."
             type="text"
             value={brandName}
             onChange={(e) => setBrandName(e.target.value)}
@@ -36,6 +37,7 @@ function AppointmentForm({
             <input
             id="location"
             type="text"
+            placeholder="19 rue Chapat 75002 Paris..."
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             />
@@ -46,6 +48,7 @@ function AppointmentForm({
             <textarea
             id="notes"
             value={notes}
+            placeholder="Don't forget sunglasses..."
             onChange={(e) => setNotes(e.target.value)}
             />
       </div>

@@ -4,6 +4,7 @@ import "./App.css";
 import AppointmentForm from "./components/AppointmentForm.jsx"
 import AppointmentList from "./components/AppointmentList.jsx"
 import AuthPage from "./pages/AuthPage.jsx"
+import AccountPage from "./pages/AccountPage.jsx"
 import { Routes, Route } from "react-router-dom"
 
 function App() {
@@ -38,6 +39,10 @@ function App() {
     }
   };
   
+  const handleLogout = () => {
+    setCurrentUser(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!brandName || !appointmentDate || !location){
@@ -88,7 +93,7 @@ return (
         element={
           <>
             <h1 className="page-title">My Appointments </h1>
-            {currentUser && <p1>Welcome, {currentUser.username}</p1>}
+            {currentUser && <p>Welcome, {currentUser.username}</p>}
 
             <AppointmentForm
               brandName={brandName}
@@ -110,6 +115,7 @@ return (
         }
       />
     <Route path="/auth" element={<AuthPage currentUser={currentUser} setCurrentUser={setCurrentUser}/>}></Route>
+    <Route path="/account" element={<AccountPage currentUser={currentUser} handleLogout={handleLogout}/>}></Route>
     </Routes>
   </div>
 );

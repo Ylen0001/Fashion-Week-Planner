@@ -11,7 +11,14 @@ router.post("/signup", async (req, res) => {
         const newUser = await prisma.user.create({
             data :  { username, email, password }
         });
-        return res.status(201).json(newUser);
+        return res.status(201).json({
+            message: "Signed up successfully",
+            user: {
+                id: newUser.id,
+                username: newUser.username,
+                email: newUser.email,
+            }
+        });
         
     } catch (error) {
         if(error.code === "P2002")

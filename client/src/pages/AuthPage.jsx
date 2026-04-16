@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AuthForm from "../components/AuthForm.jsx"
+import { useNavigate } from 'react-router-dom'
 
 function AuthPage({currentUser, setCurrentUser}) {
   const [mode, setMode] = useState("login");
@@ -7,6 +8,7 @@ function AuthPage({currentUser, setCurrentUser}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +39,8 @@ function AuthPage({currentUser, setCurrentUser}) {
           body: JSON.stringify(account)});
 
           const data = await res.json();
+          console.log("signup data:", data);
+          console.log("signup ok:", res.ok);
 
           if(!res.ok){
             alert(data.error);
@@ -50,6 +54,9 @@ function AuthPage({currentUser, setCurrentUser}) {
           setPassword("");
           setConfirmPassword("");
           setMode("login");
+          setCurrentUser(data.user)
+
+          navigate("/account");
 
         } catch (error) {
           console.error(error);
@@ -85,6 +92,7 @@ function AuthPage({currentUser, setCurrentUser}) {
 
         setCurrentUser(data.user)
         alert("Login successful");
+        navigate("/account");
 
       } catch(error){
         console.error(error);

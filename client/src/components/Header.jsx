@@ -28,6 +28,15 @@ function Header() {
                   Log in / Sign up
                 </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/account"
+                className={({ isActive }) => 
+                  `site-nav__link ${isActive? "is-active" : ""}`
+                  }
+                >Account
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </div>
