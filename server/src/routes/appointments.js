@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
+import { authenticateToken } from "../middleware/middleware.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
   try {
     const appointments = await prisma.appointment.findMany();
     res.json(appointments);

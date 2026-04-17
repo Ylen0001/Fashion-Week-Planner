@@ -17,7 +17,16 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/appointments")
+    const token = localStorage.getItem("token");
+    if(!token){
+      console.log("No token found");
+      return;
+    }
+    fetch("http://localhost:3000/appointments", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
         setAppointments(data);

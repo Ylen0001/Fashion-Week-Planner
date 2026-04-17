@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js"
+import jwt from "jsonwebtoken"
 
 const router = Router();
+const SECRET_KEY = process.env.JWT_SECRET;
 
 router.post("/signup", async (req, res) => {
     try{
@@ -41,8 +43,15 @@ router.post("/login", async (req, res) => {
     if(!user || password !== user.password)
         return res.status(401).json({error : "Invalid credentials"});
 
+    const token = jwt.sign(
+    { userId: user.id },
+    SECRET_KEY,
+    { expiresIn: "1h" }
+    ); 
+    
     return res.status(200).json({
         message: "Logging Successful",
+        token,
         user: {
             id: user.id,
             username: user.username,

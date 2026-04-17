@@ -21,7 +21,6 @@ model Appointment {
   outfitImageUrl  String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId          Int
 }
 
 model User {

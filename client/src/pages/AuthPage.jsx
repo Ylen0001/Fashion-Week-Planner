@@ -90,6 +90,9 @@ function AuthPage({currentUser, setCurrentUser}) {
           return;
         }
 
+        // console.log(data);
+        
+        localStorage.setItem("token", data.token); // Enregistrement du token dans le localSto 
         setCurrentUser(data.user)
         alert("Login successful");
         navigate("/account");
