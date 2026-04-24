@@ -21,6 +21,9 @@ model Appointment {
   outfitImageUrl  String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -29,4 +32,6 @@ model User {
   email           String    @unique
   password        String
   createdAt       DateTime  @default(now())
+
+  appointments    Appointment[]
 }

@@ -14,7 +14,7 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
     const { brandName, appointmentDate, location, notes } = req.body;
 
@@ -28,6 +28,7 @@ router.post("/", async (req, res) => {
         appointmentDate: new Date(appointmentDate),
         location,
         notes,
+        userId: req.user.userId,
       },
     });
 

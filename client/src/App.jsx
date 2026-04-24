@@ -16,28 +16,44 @@ function App() {
   const [notes, setNotes] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if(!token){
-      console.log("No token found");
-      return;
-    }
-    fetch("http://localhost:3000/appointments", {
-      headers: {
-        Authorization: `Bearer ${token}`
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return;
+  }
+
+  fetch("http://localhost:3000/appointments", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Unauthorized");
       }
+      return res.json();
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setAppointments(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    .then((data) => {
+      setAppointments(data);
+    })
+    .catch((err) => console.error(err));
+    }, []);
 
   const handleDelete = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if(!token){
+      console.error("No token found");
+      return;
+    }
+
     try {
       await fetch(`http://localhost:3000/appointments/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
       });
 
       setAppointments((prev) =>
@@ -50,10 +66,19 @@ function App() {
   
   const handleLogout = () => {
     setCurrentUser(null);
+    localStorage.removeItem("token");
+    setAppointments([]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if(!token){
+      console.error("No token found");
+      alert("Please login before adding appointments");
+      return;
+    }
+
     if(!brandName || !appointmentDate || !location){
       alert("Please fill in all required fields.");
       return;
@@ -71,6 +96,7 @@ function App() {
       const res = await fetch("http://localhost:3000/appointments", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newAppointment),
@@ -115,7 +141,7 @@ return (
               setNotes={setNotes}
               handleSubmit={handleSubmit}
             />
-
+            
             <AppointmentList
               appointments={appointments}
               handleDelete={handleDelete}
