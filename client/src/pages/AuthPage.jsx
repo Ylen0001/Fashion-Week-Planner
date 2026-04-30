@@ -31,7 +31,7 @@ function AuthPage({setCurrentUser}) {
       };
       
       try {
-        const res = await fetch("http://localhost:3000/auth/signup", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
         headers: {
           "Content-Type" : "application/json"
         },
@@ -75,7 +75,7 @@ function AuthPage({setCurrentUser}) {
       }
 
       try{
-        const res = await fetch("http://localhost:3000/auth/login", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
           headers: {
             "Content-Type": "application/json"
           },

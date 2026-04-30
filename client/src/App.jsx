@@ -23,7 +23,7 @@ useEffect(() => {
     return;
   }
 
-  fetch("http://localhost:3000/appointments", {
+  fetch(`${import.meta.env.VITE_API_URL}/appointments`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -49,7 +49,7 @@ useEffect(() => {
     }
 
     try {
-      await fetch(`http://localhost:3000/appointments/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/appointments/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ useEffect(() => {
 
     
     try {
-      const res = await fetch("http://localhost:3000/appointments", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/appointments`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
