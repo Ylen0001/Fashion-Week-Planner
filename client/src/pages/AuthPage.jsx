@@ -2,7 +2,7 @@ import { useState } from "react";
 import AuthForm from "../components/AuthForm.jsx"
 import { useNavigate } from 'react-router-dom'
 
-function AuthPage({currentUser, setCurrentUser}) {
+function AuthPage({setCurrentUser}) {
   const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
