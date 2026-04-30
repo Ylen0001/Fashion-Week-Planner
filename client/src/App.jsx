@@ -149,7 +149,7 @@ return (
           </>
         }
       />
-    <Route path="/auth" element={<AuthPage currentUser={currentUser} setCurrentUser={setCurrentUser}/>}></Route>
+    <Route path="/auth" element={<AuthPage setCurrentUser={setCurrentUser}/>}></Route>
     <Route path="/account" element={<AccountPage currentUser={currentUser} handleLogout={handleLogout}/>}></Route>
     </Routes>
   </div>
