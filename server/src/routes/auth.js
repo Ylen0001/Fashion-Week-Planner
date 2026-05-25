@@ -1,17 +1,20 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js"
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 
 const router = Router();
 const SECRET_KEY = process.env.JWT_SECRET;
+const SALT_ROUNDS = 10;
 
 router.post("/signup", async (req, res) => {
     try{
         const {username, email, password } = req.body;
         if(!username || !email || !password)
             return res.status(400).json({ error: "Missing signing up informations"})
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
         const newUser = await prisma.user.create({
-            data :  { username, email, password }
+            data :  { username, email, password: hashedPassword }
         });
         return res.status(201).json({
             message: "Signed up successfully",
@@ -40,7 +43,8 @@ router.post("/login", async (req, res) => {
             where: { email }
         });
     
-    if(!user || password !== user.password)
+    const passwordMatch = user && await bcrypt.compare(password, user.password);
+    if(!passwordMatch)
         return res.status(401).json({error : "Invalid credentials"});
 
     const token = jwt.sign(
