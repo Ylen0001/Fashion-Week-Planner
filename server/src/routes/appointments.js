@@ -6,7 +6,9 @@ const router = Router();
 
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const appointments = await prisma.appointment.findMany();
+    const appointments = await prisma.appointment.findMany({
+      where: { userId: req.user.userId },
+    });
     res.json(appointments);
   } catch (error) {
     console.error(error);
@@ -39,26 +41,7 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/appointments/:id", async (req, res) => {
-  try {
-    const id = parseInt(req.params.id, 10);
-
-    const appointment = await prisma.appointment.findUnique({
-      where: { id },
-    });
-
-    if (!appointment) {
-      return res.status(404).json({ error: "Not found" });
-    }
-
-    res.json(appointment);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error fetching appointment" });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
 
