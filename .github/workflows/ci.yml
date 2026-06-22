@@ -13,6 +13,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://user:password@localhost:5432/testdb
       JWT_SECRET: fake_jwt_secret_for_ci
+      VITE_API_URL: http://localhost:3000
 
     steps:
       - name: Checkout repository
@@ -30,6 +31,14 @@ jobs:
       - name: Generate Prisma client
         working-directory: ./server
         run: npm run prisma:generate
+
+      - name: Validate Prisma schema
+        working-directory: ./server
+        run: npx prisma validate
+
+      - name: Lint backend
+        working-directory: ./server
+        run: npm run lint
 
       - name: Install frontend dependencies
         working-directory: ./client

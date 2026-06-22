@@ -81,4 +81,17 @@ Journal concis des modifications par PR.
 
 ## PR 5 — `chore/extend-ci-and-env-example`
 
-*À venir*
+**Objectif :** améliorer l'onboarding et la CI.
+
+| Fichier | Modification |
+|---------|--------------|
+| `client/.env.example` | Template `VITE_API_URL` |
+| `server/eslint.config.js` | ESLint backend (Node) |
+| `server/package.json` | Dépendances ESLint |
+| `.github/workflows/ci.yml` | Lint backend, `prisma validate`, `VITE_API_URL` en CI |
+| `readme.md` | Chemins `client/`/`server/`, install propre, API à jour |
+| `client/src/App.jsx` | Session : 401 vs 404 sur `/auth/me`, garde `VITE_API_URL` |
+
+**Test manuel :**
+1. `cp client/.env.example client/.env` → dev local OK
+2. CI verte sur la PR
