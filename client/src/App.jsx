@@ -16,29 +16,41 @@ function App() {
   const [notes, setNotes] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-useEffect(() => {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    return;
-  }
+    if (!token) {
+      return;
+    }
 
-  fetch(`${import.meta.env.VITE_API_URL}/appointments`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Unauthorized");
+    const authHeaders = { Authorization: `Bearer ${token}` };
+
+    const loadSession = async () => {
+      try {
+        const [meRes, appointmentsRes] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_URL}/auth/me`, { headers: authHeaders }),
+          fetch(`${import.meta.env.VITE_API_URL}/appointments`, { headers: authHeaders }),
+        ]);
+
+        if (!meRes.ok || !appointmentsRes.ok) {
+          throw new Error("Unauthorized");
+        }
+
+        const user = await meRes.json();
+        const appointments = await appointmentsRes.json();
+
+        setCurrentUser(user);
+        setAppointments(appointments);
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("token");
+        setCurrentUser(null);
+        setAppointments([]);
       }
-      return res.json();
-    })
-    .then((data) => {
-      setAppointments(data);
-    })
-    .catch((err) => console.error(err));
-    }, []);
+    };
+
+    loadSession();
+  }, []);
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
