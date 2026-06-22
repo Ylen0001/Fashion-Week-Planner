@@ -31,8 +31,12 @@ function App() {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    if (res.status === 401) {
+      throw new Error("Unauthorized");
+    }
+
     if (!res.ok) {
-      throw new Error("Failed to load appointments");
+      throw new Error(`Failed to load appointments (${res.status})`);
     }
 
     const data = await res.json();
@@ -50,6 +54,13 @@ function App() {
       return;
     }
 
+    if (!import.meta.env.VITE_API_URL) {
+      console.error(
+        "VITE_API_URL is not set. Copy client/.env.example to client/.env for local development."
+      );
+      return;
+    }
+
     const authHeaders = { Authorization: `Bearer ${token}` };
 
     const loadSession = async () => {
@@ -58,19 +69,26 @@ function App() {
           headers: authHeaders,
         });
 
-        if (!meRes.ok) {
+        if (meRes.status === 401) {
           throw new Error("Unauthorized");
         }
 
-        const user = await meRes.json();
-        await reloadAppointments(token);
+        if (meRes.ok) {
+          const user = await meRes.json();
+          setCurrentUser(user);
+        } else if (meRes.status !== 404) {
+          throw new Error(`Failed to load user profile (${meRes.status})`);
+        }
 
-        setCurrentUser(user);
+        await reloadAppointments(token);
       } catch (err) {
         console.error(err);
-        localStorage.removeItem("token");
-        setCurrentUser(null);
-        setAppointments([]);
+
+        if (err.message === "Unauthorized") {
+          localStorage.removeItem("token");
+          setCurrentUser(null);
+          setAppointments([]);
+        }
       }
     };
 
