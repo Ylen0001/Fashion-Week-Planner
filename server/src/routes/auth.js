@@ -17,8 +17,14 @@ router.post("/signup", async (req, res) => {
         const newUser = await prisma.user.create({
             data :  { username, email, password: hashedPassword }
         });
+        const token = jwt.sign(
+            { userId: newUser.id },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
         return res.status(201).json({
             message: "Signed up successfully",
+            token,
             user: {
                 id: newUser.id,
                 username: newUser.username,

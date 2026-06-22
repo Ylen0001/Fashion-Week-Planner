@@ -39,8 +39,6 @@ function AuthPage({setCurrentUser}) {
           body: JSON.stringify(account)});
 
           const data = await res.json();
-          console.log("signup data:", data);
-          console.log("signup ok:", res.ok);
 
           if(!res.ok){
             alert(data.error);
@@ -49,12 +47,13 @@ function AuthPage({setCurrentUser}) {
           
           alert("Account created successfully.");
 
+          localStorage.setItem("token", data.token);
+          setCurrentUser(data.user);
+
           setUsername("");
           setEmail("");
           setPassword("");
           setConfirmPassword("");
-          setMode("login");
-          setCurrentUser(data.user)
 
           navigate("/account");
 
@@ -90,9 +89,7 @@ function AuthPage({setCurrentUser}) {
           return;
         }
 
-        // console.log(data);
-        
-        localStorage.setItem("token", data.token); // Enregistrement du token dans le localSto 
+        localStorage.setItem("token", data.token);
         setCurrentUser(data.user)
         alert("Login successful");
         navigate("/account");
