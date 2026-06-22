@@ -1,6 +1,6 @@
 import AppointmentItem from "./AppointmentItem.jsx"
 
-function AppointmentList({ appointments, handleDelete }) {
+function AppointmentList({ appointments, handleDelete, handleEdit }) {
     return (
     <section className="appointments-section">
         <h2 className="section-title">Upcoming appointments</h2>
@@ -10,7 +10,12 @@ function AppointmentList({ appointments, handleDelete }) {
         ) : (
           <ul className="appointments-list">
             {appointments.map((appt) => (
-                <AppointmentItem appt={appt} key={appt.id} handleDelete={handleDelete}/>
+                <AppointmentItem
+                  appt={appt}
+                  key={appt.id}
+                  handleDelete={handleDelete}
+                  handleEdit={handleEdit}
+                />
             ))}
           </ul>
         )}

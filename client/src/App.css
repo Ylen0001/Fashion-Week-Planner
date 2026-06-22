@@ -322,6 +322,24 @@ textarea {
   transform: translateY(0);
 }
 
+.button--secondary {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-light);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.button--secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 /* Appointments */
 .appointments-section {
   margin-top: 12px;
@@ -347,6 +365,17 @@ textarea {
   flex-direction: column;
   gap: 6px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.appointment-item__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.appointment-item__button {
+  margin-top: 0;
+  align-self: flex-start;
 }
 
 @keyframes meshMove {

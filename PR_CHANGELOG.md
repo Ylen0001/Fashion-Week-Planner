@@ -53,7 +53,29 @@ Journal concis des modifications par PR.
 
 ## PR 4 — `feature/edit-appointments`
 
-*À venir*
+**Objectif :** permettre la modification d'un rendez-vous existant.
+
+| Fichier | Modification |
+|---------|--------------|
+| `server/src/routes/appointments.js` | `PUT /appointments/:id` avec vérif propriétaire + validation date |
+| `client/src/App.jsx` | Mode édition, reload depuis API après create/update/delete |
+| `client/src/components/AppointmentForm.jsx` | Boutons « Save changes » / « Cancel » en mode édition |
+| `client/src/components/AppointmentItem.jsx` | Bouton Edit + affichage date sécurisé |
+| `client/src/components/AppointmentList.jsx` | Passe `handleEdit` |
+| `client/src/App.css` | Styles actions formulaire et boutons item |
+
+**Flux Edit :** cliquer Edit sur un RDV → le formulaire du haut se pré-remplit → modifier → Save changes.
+
+**Correctifs post-review :**
+- Reload depuis l'API au lieu de patcher le state local (évite suppressions fantômes)
+- Vérif `res.ok` sur DELETE
+- Affichage date tolérant si donnée invalide
+
+**Test manuel :**
+1. Créer un RDV → date affichée correctement
+2. Delete un RDV → seul celui-ci disparaît
+3. Edit → modifier → Save → F5 → persisté
+4. Cancel → formulaire réinitialisé
 
 ---
 
