@@ -9,6 +9,8 @@ import { Routes, Route } from "react-router-dom"
 
 function toDatetimeLocalValue(isoString) {
   const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+
   const pad = (value) => String(value).padStart(2, "0");
 
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -24,6 +26,23 @@ function App() {
   const [notes, setNotes] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
+  const reloadAppointments = async (token) => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/appointments`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to load appointments");
+    }
+
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid appointments response");
+    }
+
+    setAppointments(data);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -35,20 +54,18 @@ function App() {
 
     const loadSession = async () => {
       try {
-        const [meRes, appointmentsRes] = await Promise.all([
-          fetch(`${import.meta.env.VITE_API_URL}/auth/me`, { headers: authHeaders }),
-          fetch(`${import.meta.env.VITE_API_URL}/appointments`, { headers: authHeaders }),
-        ]);
+        const meRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+          headers: authHeaders,
+        });
 
-        if (!meRes.ok || !appointmentsRes.ok) {
+        if (!meRes.ok) {
           throw new Error("Unauthorized");
         }
 
         const user = await meRes.json();
-        const appointments = await appointmentsRes.json();
+        await reloadAppointments(token);
 
         setCurrentUser(user);
-        setAppointments(appointments);
       } catch (err) {
         console.error(err);
         localStorage.removeItem("token");
@@ -83,24 +100,34 @@ function App() {
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
 
-    if(!token){
+    if (!token) {
       console.error("No token found");
       return;
     }
 
+    if (id == null) {
+      console.error("Invalid appointment id");
+      return;
+    }
+
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/appointments/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/appointments/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
 
-      setAppointments((prev) =>
-        prev.filter((appt) => appt.id !== id)
-      );
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || "Could not delete appointment");
+        return;
+      }
+
+      await reloadAppointments(token);
     } catch (error) {
       console.error(error);
+      alert("Network error. Please try again.");
     }
   };
   
@@ -153,14 +180,7 @@ function App() {
         return;
       }
 
-      if (isEditing) {
-        setAppointments((prevAppointments) =>
-          prevAppointments.map((appt) => (appt.id === editingId ? data : appt))
-        );
-      } else {
-        setAppointments((prevAppointments) => [...prevAppointments, data]);
-      }
-
+      await reloadAppointments(token);
       resetForm();
     } catch (error) {
       console.error(error);

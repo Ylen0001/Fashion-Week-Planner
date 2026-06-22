@@ -24,10 +24,15 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    const parsedDate = new Date(appointmentDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ error: "Invalid appointment date" });
+    }
+
     const newAppointment = await prisma.appointment.create({
       data: {
         brandName,
-        appointmentDate: new Date(appointmentDate),
+        appointmentDate: parsedDate,
         location,
         notes,
         userId: req.user.userId,
@@ -55,6 +60,11 @@ router.put("/:id", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    const parsedDate = new Date(appointmentDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return res.status(400).json({ error: "Invalid appointment date" });
+    }
+
     const existing = await prisma.appointment.findFirst({
       where: { id, userId: req.user.userId },
     });
@@ -67,7 +77,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
       where: { id },
       data: {
         brandName,
-        appointmentDate: new Date(appointmentDate),
+        appointmentDate: parsedDate,
         location,
         notes,
       },

@@ -1,9 +1,18 @@
 function AppointmentItem({ appt, handleDelete, handleEdit }) {
+    const formatAppointmentDate = (value) => {
+      if (!value) return "Date unavailable";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Date unavailable";
+
+      return date.toLocaleString();
+    };
+
     return(
               <li className="appointment-item">
                 <strong>{appt.brandName}</strong>
                 <span>{appt.location}</span>
-                <span>{new Date(appt.appointmentDate).toLocaleString()}</span>
+                <span>{formatAppointmentDate(appt.appointmentDate)}</span>
                 <div className="appointment-item__actions">
                   <button
                     type="button"

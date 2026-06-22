@@ -57,19 +57,25 @@ Journal concis des modifications par PR.
 
 | Fichier | Modification |
 |---------|--------------|
-| `server/src/routes/appointments.js` | `PUT /appointments/:id` avec vérif propriétaire |
-| `client/src/App.jsx` | Mode édition (`editingId`), `handleEdit` / `handleCancelEdit`, submit POST ou PUT |
+| `server/src/routes/appointments.js` | `PUT /appointments/:id` avec vérif propriétaire + validation date |
+| `client/src/App.jsx` | Mode édition, reload depuis API après create/update/delete |
 | `client/src/components/AppointmentForm.jsx` | Boutons « Save changes » / « Cancel » en mode édition |
-| `client/src/components/AppointmentItem.jsx` | Bouton Edit + affichage du lieu |
+| `client/src/components/AppointmentItem.jsx` | Bouton Edit + affichage date sécurisé |
 | `client/src/components/AppointmentList.jsx` | Passe `handleEdit` |
 | `client/src/App.css` | Styles actions formulaire et boutons item |
 
+**Flux Edit :** cliquer Edit sur un RDV → le formulaire du haut se pré-remplit → modifier → Save changes.
+
+**Correctifs post-review :**
+- Reload depuis l'API au lieu de patcher le state local (évite suppressions fantômes)
+- Vérif `res.ok` sur DELETE
+- Affichage date tolérant si donnée invalide
+
 **Test manuel :**
-1. Créer un RDV
-2. Cliquer Edit → formulaire pré-rempli
-3. Modifier et sauvegarder → liste mise à jour
-4. F5 → modifications persistées
-5. Cancel → formulaire réinitialisé
+1. Créer un RDV → date affichée correctement
+2. Delete un RDV → seul celui-ci disparaît
+3. Edit → modifier → Save → F5 → persisté
+4. Cancel → formulaire réinitialisé
 
 ---
 
