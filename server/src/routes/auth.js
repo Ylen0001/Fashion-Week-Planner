@@ -8,6 +8,23 @@ const router = Router();
 const SECRET_KEY = process.env.JWT_SECRET;
 const SALT_ROUNDS = 10;
 
+function isBcryptHash(value) {
+    return typeof value === "string" && /^\$2[aby]\$/.test(value);
+}
+
+async function verifyPassword(plainPassword, storedPassword) {
+    if (!storedPassword) {
+        return false;
+    }
+
+    if (isBcryptHash(storedPassword)) {
+        return bcrypt.compare(plainPassword, storedPassword);
+    }
+
+    // Legacy accounts created before bcrypt stored passwords in plain text.
+    return plainPassword === storedPassword;
+}
+
 router.post("/signup", async (req, res) => {
     try{
         const {username, email, password } = req.body;
@@ -42,17 +59,25 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try{
-        const {email, password} = req.body;                             // On destructure le contenu de la request front
+        const email = req.body.email?.trim();
+        const password = req.body.password;
         if(!email || !password)
             return res.status(400).json({ error: "Missing login information"})
 
-        const user = await prisma.user.findUnique({                     // requête prisma (ne pas oublier prisma.ColonneDeLaDB.findUnique({}))
+        const user = await prisma.user.findUnique({
             where: { email }
         });
     
-    const passwordMatch = user && await bcrypt.compare(password, user.password);
+    const passwordMatch = user && await verifyPassword(password, user.password);
     if(!passwordMatch)
         return res.status(401).json({error : "Invalid credentials"});
+
+    if (!isBcryptHash(user.password)) {
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { password: await bcrypt.hash(password, SALT_ROUNDS) },
+        });
+    }
 
     const token = jwt.sign(
     { userId: user.id },
