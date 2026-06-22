@@ -7,8 +7,16 @@ import AuthPage from "./pages/AuthPage.jsx"
 import AccountPage from "./pages/AccountPage.jsx"
 import { Routes, Route } from "react-router-dom"
 
+function toDatetimeLocalValue(isoString) {
+  const date = new Date(isoString);
+  const pad = (value) => String(value).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 function App() {
   const [appointments, setAppointments] = useState([]);
+  const [editingId, setEditingId] = useState(null);
 
   const [brandName, setBrandName] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
@@ -51,6 +59,26 @@ function App() {
 
     loadSession();
   }, []);
+
+  const resetForm = () => {
+    setBrandName("");
+    setAppointmentDate("");
+    setLocation("");
+    setNotes("");
+    setEditingId(null);
+  };
+
+  const handleEdit = (appt) => {
+    setEditingId(appt.id);
+    setBrandName(appt.brandName);
+    setAppointmentDate(toDatetimeLocalValue(appt.appointmentDate));
+    setLocation(appt.location);
+    setNotes(appt.notes ?? "");
+  };
+
+  const handleCancelEdit = () => {
+    resetForm();
+  };
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
@@ -96,37 +124,47 @@ function App() {
       return;
     }
 
-    const newAppointment = {
+    const appointmentData = {
       brandName,
       appointmentDate,
       location,
       notes,
     };
 
-    
+    const isEditing = editingId !== null;
+    const url = isEditing
+      ? `${import.meta.env.VITE_API_URL}/appointments/${editingId}`
+      : `${import.meta.env.VITE_API_URL}/appointments`;
+
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/appointments`, {
-        method: "POST",
+      const res = await fetch(url, {
+        method: isEditing ? "PUT" : "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newAppointment),
+        body: JSON.stringify(appointmentData),
       });
-      
-      const createdAppointment = await res.json();
-      
-      setAppointments((prevAppointments) => [
-      ...prevAppointments,
-      createdAppointment,
-      ]);
 
-      setBrandName("");
-      setAppointmentDate("");
-      setLocation("");
-      setNotes("");
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Something went wrong");
+        return;
+      }
+
+      if (isEditing) {
+        setAppointments((prevAppointments) =>
+          prevAppointments.map((appt) => (appt.id === editingId ? data : appt))
+        );
+      } else {
+        setAppointments((prevAppointments) => [...prevAppointments, data]);
+      }
+
+      resetForm();
     } catch (error) {
       console.error(error);
+      alert("Network error. Please try again.");
     }
   };
 
@@ -152,11 +190,14 @@ return (
               notes={notes}
               setNotes={setNotes}
               handleSubmit={handleSubmit}
+              editingId={editingId}
+              onCancelEdit={handleCancelEdit}
             />
             
             <AppointmentList
               appointments={appointments}
               handleDelete={handleDelete}
+              handleEdit={handleEdit}
             />
           </>
         }

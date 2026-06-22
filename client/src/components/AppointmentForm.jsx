@@ -7,8 +7,12 @@ function AppointmentForm({
     setLocation,
     notes,
     setNotes,
-    handleSubmit
+    handleSubmit,
+    editingId,
+    onCancelEdit,
 }) {
+  const isEditing = editingId !== null;
+
   return (
     <form className="card" onSubmit={handleSubmit}>
       <div className="form-group">
@@ -53,9 +57,17 @@ function AppointmentForm({
             />
       </div>
 
-      <button className="button" type="submit">
-        Add appointment
-      </button>
+      <div className="form-actions">
+        <button className="button" type="submit">
+          {isEditing ? "Save changes" : "Add appointment"}
+        </button>
+
+        {isEditing && (
+          <button className="button button--secondary" type="button" onClick={onCancelEdit}>
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 }

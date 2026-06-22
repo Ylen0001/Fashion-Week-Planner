@@ -41,6 +41,45 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
+router.put("/:id", authenticateToken, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: "Invalid appointment id" });
+    }
+
+    const { brandName, appointmentDate, location, notes } = req.body;
+
+    if (!brandName || !appointmentDate || !location) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const existing = await prisma.appointment.findFirst({
+      where: { id, userId: req.user.userId },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    const updatedAppointment = await prisma.appointment.update({
+      where: { id },
+      data: {
+        brandName,
+        appointmentDate: new Date(appointmentDate),
+        location,
+        notes,
+      },
+    });
+
+    res.json(updatedAppointment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error updating appointment" });
+  }
+});
+
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
