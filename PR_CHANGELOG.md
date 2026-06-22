@@ -37,7 +37,17 @@ Journal concis des modifications par PR.
 
 ## PR 3 — `fix/signup-auto-login`
 
-*À venir*
+**Objectif :** connecter automatiquement l'utilisateur après l'inscription.
+
+| Fichier | Modification |
+|---------|--------------|
+| `server/src/routes/auth.js` | `POST /auth/signup` retourne un JWT (comme login) |
+| `client/src/pages/AuthPage.jsx` | Stocke le token après signup ; supprime les `console.log` de debug |
+
+**Test manuel :**
+1. Créer un compte via signup
+2. Sans re-login, aller sur `/` et ajouter un RDV → succès
+3. F5 → session toujours active (grâce à PR 2)
 
 ---
 
