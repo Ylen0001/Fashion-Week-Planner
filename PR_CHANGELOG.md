@@ -21,7 +21,17 @@ Journal concis des modifications par PR.
 
 ## PR 2 — `feature/auth-me-endpoint`
 
-*À venir*
+**Objectif :** restaurer la session utilisateur après un refresh de page.
+
+| Fichier | Modification |
+|---------|--------------|
+| `server/src/routes/auth.js` | `GET /auth/me` (protégé) → retourne `{ id, username, email }` depuis la DB |
+| `client/src/App.jsx` | Au mount, appelle `/auth/me` + `/appointments` en parallèle ; nettoie le token si 401 |
+
+**Test manuel :**
+1. Se connecter → aller sur `/account` → profil affiché
+2. F5 → profil toujours affiché (plus « not logged in »)
+3. Supprimer le token ou attendre expiration → F5 → état déconnecté
 
 ---
 
