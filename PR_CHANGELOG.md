@@ -95,3 +95,23 @@ Journal concis des modifications par PR.
 **Test manuel :**
 1. `cp client/.env.example client/.env` → dev local OK
 2. CI verte sur la PR
+
+---
+
+## PR 6 — `test/api-integration`
+
+**Objectif :** ajouter des tests d'intégration API backend avec Vitest + Supertest.
+
+| Fichier | Modification |
+|---------|--------------|
+| `server/src/app.js` | App Express exportable pour les tests |
+| `server/index.js` | Délègue à `createApp()` |
+| `server/tests/auth.test.js` | 6 tests auth (login, signup, `/me`, legacy password) |
+| `server/tests/appointments.test.js` | 5 tests CRUD + isolation `userId` |
+| `server/tests/helpers.js` | Helpers signup/login/request |
+| `server/vitest.config.js` | Config Vitest |
+| `server/package.json` | Scripts `npm test` + dépendances |
+| `.github/workflows/ci.yml` | Postgres éphémère + `prisma migrate deploy` + `npm test` |
+| `readme.md` | Section « Backend tests » |
+
+**Lancer en local :** `cd server && npm test`

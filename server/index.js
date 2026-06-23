@@ -1,22 +1,10 @@
-import express from "express";
-import cors from "cors";
-import appointmentsRoutes from "./src/routes/appointments.js";
-import authRoutes from "./src/routes/auth.js"
-import dotenv from "dotenv"
+import dotenv from "dotenv";
+import { createApp } from "./src/app.js";
 
 dotenv.config();
-const app = express();
+
+const app = createApp();
 const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
-});
-
-app.use("/appointments", appointmentsRoutes);
-app.use("/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
