@@ -47,7 +47,7 @@ function App() {
     setAppointments(data);
   };
 
-  useEffect(() => {
+  const loadSession = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -61,37 +61,35 @@ function App() {
       return;
     }
 
-    const authHeaders = { Authorization: `Bearer ${token}` };
+    try {
+      const meRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const loadSession = async () => {
-      try {
-        const meRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
-          headers: authHeaders,
-        });
-
-        if (meRes.status === 401) {
-          throw new Error("Unauthorized");
-        }
-
-        if (meRes.ok) {
-          const user = await meRes.json();
-          setCurrentUser(user);
-        } else if (meRes.status !== 404) {
-          throw new Error(`Failed to load user profile (${meRes.status})`);
-        }
-
-        await reloadAppointments(token);
-      } catch (err) {
-        console.error(err);
-
-        if (err.message === "Unauthorized") {
-          localStorage.removeItem("token");
-          setCurrentUser(null);
-          setAppointments([]);
-        }
+      if (meRes.status === 401) {
+        throw new Error("Unauthorized");
       }
-    };
 
+      if (meRes.ok) {
+        const user = await meRes.json();
+        setCurrentUser(user);
+      } else if (meRes.status !== 404) {
+        throw new Error(`Failed to load user profile (${meRes.status})`);
+      }
+
+      await reloadAppointments(token);
+    } catch (err) {
+      console.error(err);
+
+      if (err.message === "Unauthorized") {
+        localStorage.removeItem("token");
+        setCurrentUser(null);
+        setAppointments([]);
+      }
+    }
+  };
+
+  useEffect(() => {
     loadSession();
   }, []);
 
@@ -240,7 +238,7 @@ return (
           </>
         }
       />
-    <Route path="/auth" element={<AuthPage setCurrentUser={setCurrentUser}/>}></Route>
+    <Route path="/auth" element={<AuthPage setCurrentUser={setCurrentUser} onAuthSuccess={loadSession} />}></Route>
     <Route path="/account" element={<AccountPage currentUser={currentUser} handleLogout={handleLogout}/>}></Route>
     </Routes>
   </div>

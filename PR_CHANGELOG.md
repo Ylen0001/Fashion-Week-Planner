@@ -115,3 +115,17 @@ Journal concis des modifications par PR.
 | `readme.md` | Section « Backend tests » |
 
 **Lancer en local :** `cd server && npm test`
+
+---
+
+## PR 7 — `fix/reload-session-after-login`
+
+**Objectif :** recharger user + appointments après login/signup sans F5.
+
+| Fichier | Modification |
+|---------|--------------|
+| `client/src/App.jsx` | `loadSession` extraite et passée à `AuthPage` |
+| `client/src/pages/AuthPage.jsx` | Appelle `onAuthSuccess()` après login/signup |
+
+**Test manuel :**
+1. Login → créer un RDV → logout → re-login → aller sur `/` → RDV visible sans F5
