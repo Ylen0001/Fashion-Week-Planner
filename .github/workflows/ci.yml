@@ -10,6 +10,16 @@ jobs:
   check:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+
     env:
       DATABASE_URL: postgresql://user:password@localhost:5432/testdb
       JWT_SECRET: fake_jwt_secret_for_ci
@@ -39,6 +49,14 @@ jobs:
       - name: Lint backend
         working-directory: ./server
         run: npm run lint
+
+      - name: Apply database migrations
+        working-directory: ./server
+        run: npx prisma migrate deploy
+
+      - name: Run backend tests
+        working-directory: ./server
+        run: npm test
 
       - name: Install frontend dependencies
         working-directory: ./client

@@ -119,6 +119,19 @@ make dev
 
 ---
 
+## Backend tests
+
+Requires a running PostgreSQL database with migrations applied.
+
+```bash
+cd server
+npm test
+```
+
+Uses **Vitest** (test runner) and **Supertest** (HTTP API requests against Express).
+
+---
+
 ## API Endpoints
 
 ### Auth

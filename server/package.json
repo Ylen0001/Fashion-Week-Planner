@@ -6,6 +6,8 @@
     "dev": "node index.js",
     "start": "node index.js",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prisma:generate": "prisma generate"
   },
   "keywords": [],
@@ -26,6 +28,8 @@
     "@eslint/js": "^9.39.4",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
-    "globals": "^17.4.0"
+    "globals": "^17.4.0",
+    "supertest": "^7.1.4",
+    "vitest": "^3.2.4"
   }
 }
