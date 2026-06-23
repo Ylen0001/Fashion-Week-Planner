@@ -2,7 +2,7 @@ import { useState } from "react";
 import AuthForm from "../components/AuthForm.jsx"
 import { useNavigate } from 'react-router-dom'
 
-function AuthPage({setCurrentUser}) {
+function AuthPage({ setCurrentUser, onAuthSuccess }) {
   const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -55,6 +55,7 @@ function AuthPage({setCurrentUser}) {
           setPassword("");
           setConfirmPassword("");
 
+          await onAuthSuccess?.();
           navigate("/account");
 
         } catch (error) {
@@ -90,7 +91,9 @@ function AuthPage({setCurrentUser}) {
         }
 
         localStorage.setItem("token", data.token);
-        setCurrentUser(data.user)
+        setCurrentUser(data.user);
+
+        await onAuthSuccess?.();
         alert("Login successful");
         navigate("/account");
 
